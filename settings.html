@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Settings — WatcherOsint</title>
+<meta name="description" content="Account security, devices and preferences.">
+<meta name="theme-color" content="#05070d">
+<meta name="referrer" content="same-origin">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/style.css">
+<script src="/i18n.js"></script>
+<script src="/core.js"></script>
+</head>
+<body data-page="settings">
+<canvas id="bg" aria-hidden="true"></canvas>
+<div class="veil" aria-hidden="true"></div><div class="grid-fx" aria-hidden="true"></div>
+<header id="site-header"></header>
+<main id="main"><div class="wrap">
+<div class="page-head"><h1 data-i18n="set.t"></h1><p class="muted" data-i18n="set.d"></p></div>
+<div class="set-grid">
+
+<section class="glass card stack" aria-labelledby="h-prof"><h2 id="h-prof"><span data-icon="shield" class="ico"></span><span data-i18n="set.profile"></span></h2>
+  <dl class="kv" id="profile"></dl></section>
+
+<section class="glass card stack" aria-labelledby="h-pref"><h2 id="h-pref" data-i18n="set.pref.t"></h2>
+  <div class="res-grid">
+    <div class="field"><label for="pref-lang" data-i18n="set.lang"></label><select class="input" id="pref-lang"><option value="en">English</option><option value="fa">فارسی</option></select></div>
+    <div class="field"><label for="pref-bg" data-i18n="set.bg"></label><select class="input" id="pref-bg"><option value="auto" data-i18n="bg.auto"></option><option value="on" data-i18n="bg.on"></option><option value="off" data-i18n="bg.off"></option></select></div>
+  </div></section>
+
+<section class="glass card stack" aria-labelledby="h-pw"><h2 id="h-pw" data-i18n="set.pw.t"></h2><p class="muted" data-i18n="set.pw.d"></p>
+  <form id="f-pw" novalidate class="stack">
+    <div class="field" id="pw-cur-wrap"><label for="pw-cur" data-i18n="f.password.current"></label><div class="input-wrap"><input class="input" id="pw-cur" type="password" autocomplete="current-password" dir="ltr" maxlength="128"><button type="button" class="icon-btn toggle" data-toggle="pw-cur" aria-pressed="false"></button></div></div>
+    <div class="field"><label for="pw-new" data-i18n="f.password.new"></label><div class="input-wrap"><input class="input" id="pw-new" type="password" autocomplete="new-password" dir="ltr" maxlength="128"><button type="button" class="icon-btn toggle" data-toggle="pw-new" aria-pressed="false"></button></div>
+      <div class="meter" id="pw-meter" data-s="0" aria-hidden="true"><i></i><i></i><i></i><i></i></div><p class="hint" id="pw-label" aria-live="polite"></p></div>
+    <div class="form-error" id="pw-err" role="alert" hidden></div>
+    <div><button class="btn btn-primary" type="submit" id="pw-btn"><span data-i18n="set.pw.btn"></span></button></div>
+  </form></section>
+
+<section class="glass card stack" aria-labelledby="h-2fa"><h2 id="h-2fa"><span data-icon="key" class="ico"></span><span data-i18n="set.2fa.t"></span></h2>
+  <div id="twofa-off" hidden><p class="muted" data-i18n="set.2fa.off"></p><button class="btn btn-primary" type="button" id="twofa-start"><span data-i18n="set.2fa.enable"></span></button></div>
+  <div id="twofa-setup" class="stack" hidden>
+    <p data-i18n="set.2fa.s1"></p>
+    <div class="secret" id="twofa-secret"></div>
+    <div class="row"><button class="btn btn-sm" type="button" id="twofa-copy"><span data-i18n="common.copy"></span></button><a class="btn btn-sm" id="twofa-link" href="#"><span data-i18n="set.2fa.open"></span></a></div>
+    <p data-i18n="set.2fa.s2"></p>
+    <form id="f-2fa-on" class="row" novalidate><label class="sr-only" for="twofa-code" data-i18n="f.code"></label><input class="input mono" id="twofa-code" inputmode="numeric" autocomplete="one-time-code" maxlength="7" dir="ltr" placeholder="123456"><button class="btn btn-primary" type="submit"><span data-i18n="set.2fa.confirm"></span></button></form>
+    <div class="form-error" id="twofa-err" role="alert" hidden></div>
+  </div>
+  <div id="twofa-codes" class="stack" hidden><h3 data-i18n="set.2fa.rec.t"></h3><p class="muted" data-i18n="set.2fa.rec.d"></p><div class="codes" id="codes-list"></div>
+    <div class="row"><button class="btn btn-sm" type="button" id="codes-copy"><span data-i18n="common.copy"></span></button><button class="btn btn-sm" type="button" id="codes-dl"><span data-i18n="common.download"></span></button></div></div>
+  <div id="twofa-on" class="stack" hidden><span class="badge ok" data-i18n="set.2fa.on"></span>
+    <details><summary data-i18n="set.2fa.dis.t"></summary>
+      <form id="f-2fa-off" class="stack" novalidate>
+        <div class="field" id="d-pw-wrap"><label for="d-pw" data-i18n="f.password"></label><input class="input" id="d-pw" type="password" autocomplete="current-password" dir="ltr"></div>
+        <div class="field"><label for="d-code" data-i18n="f.code"></label><input class="input mono" id="d-code" inputmode="numeric" autocomplete="one-time-code" maxlength="7" dir="ltr" placeholder="123456"></div>
+        <div class="form-error" id="d-err" role="alert" hidden></div>
+        <div><button class="btn btn-danger" type="submit"><span data-i18n="set.2fa.dis.btn"></span></button></div>
+      </form></details></div>
+</section>
+
+<section class="glass card stack" aria-labelledby="h-sess"><div class="row between"><h2 id="h-sess" data-i18n="set.sess.t"></h2><button class="btn btn-sm btn-danger" type="button" id="sess-all"><span data-i18n="set.sess.all"></span></button></div>
+  <div id="sessions" class="stack"></div></section>
+
+<section class="glass card stack" aria-labelledby="h-act"><h2 id="h-act" data-i18n="set.act.t"></h2>
+  <div class="tbl-scroll"><table class="tbl"><thead><tr><th scope="col" data-i18n="set.act.event"></th><th scope="col" data-i18n="set.act.time"></th><th scope="col" data-i18n="set.act.ip"></th></tr></thead><tbody id="activity"></tbody></table></div></section>
+
+</div></div></main>
+<footer class="site-footer"><div class="wrap row between"><span>© WatcherOsint · <span data-i18n="footer.rights"></span></span><span class="faint mono">v2.0</span></div></footer>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script defer src="/bg3d.js"></script>
+<script src="/settings.js"></script>
+</body>
+</html>

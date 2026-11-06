@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Console — WatcherOsint</title>
+<meta name="description" content="Phone, email and username analysis on public signals.">
+<meta name="theme-color" content="#05070d">
+<meta name="referrer" content="same-origin">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/style.css">
+<script src="/i18n.js"></script>
+<script src="/core.js"></script>
+</head>
+<body data-page="console">
+<canvas id="bg" aria-hidden="true"></canvas>
+<div class="veil" aria-hidden="true"></div><div class="grid-fx" aria-hidden="true"></div>
+<header id="site-header"></header>
+<main id="main"><div class="wrap">
+<div class="page-head"><h1 data-i18n="con.t"></h1><p class="muted" data-i18n="con.d"></p></div>
+<div class="tabs" role="tablist" data-i18n-aria="con.tabs.aria">
+  <button class="tab" role="tab" id="tab-phone" aria-controls="panel-phone" aria-selected="true"><span data-icon="phone" class="ico"></span><span data-i18n="tab.phone"></span></button>
+  <button class="tab" role="tab" id="tab-email" aria-controls="panel-email" aria-selected="false" tabindex="-1"><span data-icon="mail" class="ico"></span><span data-i18n="tab.email"></span></button>
+  <button class="tab" role="tab" id="tab-username" aria-controls="panel-username" aria-selected="false" tabindex="-1"><span data-icon="at" class="ico"></span><span data-i18n="tab.username"></span></button>
+</div>
+<div class="glass card stack">
+  <section role="tabpanel" id="panel-phone" aria-labelledby="tab-phone">
+    <form id="f-phone" class="tool-form" novalidate>
+      <div class="field"><label for="in-phone" data-i18n="phone.lbl"></label><input class="input" id="in-phone" dir="ltr" inputmode="tel" autocomplete="off" maxlength="20" required data-i18n-ph="phone.ph"></div>
+      <button class="btn btn-primary" type="submit"><span data-i18n="phone.btn"></span></button>
+    </form>
+  </section>
+  <section role="tabpanel" id="panel-email" aria-labelledby="tab-email" hidden>
+    <form id="f-email" class="tool-form" novalidate>
+      <div class="field"><label for="in-email" data-i18n="email.lbl"></label><input class="input" id="in-email" type="email" dir="ltr" autocomplete="off" maxlength="254" required data-i18n-ph="email.ph"></div>
+      <button class="btn btn-primary" type="submit"><span data-i18n="email.btn"></span></button>
+      <label class="check"><input type="checkbox" id="in-iran" checked><span data-i18n="email.iran"></span></label>
+    </form>
+  </section>
+  <section role="tabpanel" id="panel-username" aria-labelledby="tab-username" hidden>
+    <form id="f-username" class="tool-form" novalidate>
+      <div class="field"><label for="in-user" data-i18n="user.lbl"></label><input class="input" id="in-user" dir="ltr" autocomplete="off" autocapitalize="none" spellcheck="false" maxlength="32" required data-i18n-ph="user.ph"></div>
+      <button class="btn btn-primary" type="submit"><span data-i18n="user.btn"></span></button>
+      <div class="row"><span class="label" id="region-lbl" data-i18n="region.lbl"></span>
+        <div class="seg" role="group" aria-labelledby="region-lbl"><button type="button" data-region="all" aria-pressed="true" data-i18n="region.all"></button><button type="button" data-region="iran" aria-pressed="false" data-i18n="region.iran"></button><button type="button" data-region="global" aria-pressed="false" data-i18n="region.global"></button></div></div>
+    </form>
+  </section>
+</div>
+<div id="out" class="results" aria-live="polite" aria-busy="false"></div>
+</div></main>
+<footer class="site-footer"><div class="wrap row between"><span>© WatcherOsint · <span data-i18n="footer.rights"></span></span><span class="faint mono">v2.0</span></div></footer>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script defer src="/bg3d.js"></script>
+<script src="/console.js"></script>
+</body>
+</html>

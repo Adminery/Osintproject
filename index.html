@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WatcherOsint — public-signal intelligence console</title>
+<meta name="description" content="Phone, email and username OSINT on public signals, behind verified accounts with OTP and 2FA.">
+<meta name="theme-color" content="#05070d">
+<meta name="referrer" content="same-origin">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/style.css">
+<script src="/i18n.js"></script>
+<script src="/core.js"></script>
+</head>
+<body data-page="home">
+<canvas id="bg" aria-hidden="true"></canvas>
+<div class="veil" aria-hidden="true"></div><div class="grid-fx" aria-hidden="true"></div>
+<header id="site-header"></header>
+<main id="main">
+<div class="wrap">
+  <section class="hero">
+    <div>
+      <div class="eyebrow"><i></i><span data-i18n="hero.badge"></span></div>
+      <h1><span class="grad" data-i18n="hero.t1"></span> <span data-i18n="hero.t2"></span></h1>
+      <p class="lead" data-i18n="hero.lead"></p>
+      <div class="cta" id="cta"></div>
+      <div class="trust">
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="trust.1"></span></span>
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="trust.2"></span></span>
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span data-i18n="trust.3"></span></span>
+      </div>
+    </div>
+    <div class="glass terminal" aria-hidden="true">
+      <div class="term-bar"><i></i><i></i><i></i><span data-i18n="term.title"></span></div>
+      <div class="term-body" id="term"></div>
+    </div>
+  </section>
+  <div class="banner"><img src="/banner.svg" alt="" width="1600" height="460"></div>
+  <section class="section" aria-labelledby="h-feat">
+    <h2 id="h-feat" data-i18n="feat.title"></h2><p class="muted" data-i18n="feat.sub"></p>
+    <div class="features"><article class="glass feature"><div class="ic" data-icon="phone"></div><h3 data-i18n="feat.phone.t"></h3><p data-i18n="feat.phone.d"></p></article><article class="glass feature"><div class="ic" data-icon="mail"></div><h3 data-i18n="feat.email.t"></h3><p data-i18n="feat.email.d"></p></article><article class="glass feature"><div class="ic" data-icon="at"></div><h3 data-i18n="feat.user.t"></h3><p data-i18n="feat.user.d"></p></article><article class="glass feature"><div class="ic" data-icon="lock"></div><h3 data-i18n="feat.sec.t"></h3><p data-i18n="feat.sec.d"></p></article></div>
+  </section>
+  <section class="section" aria-labelledby="h-sec">
+    <h2 id="h-sec" data-i18n="sec.title"></h2><p class="muted" data-i18n="sec.sub"></p>
+    <ul class="sec-list"><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><div><b data-i18n="sec.1.t"></b><span data-i18n="sec.1.d"></span></div></li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><div><b data-i18n="sec.2.t"></b><span data-i18n="sec.2.d"></span></div></li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><div><b data-i18n="sec.3.t"></b><span data-i18n="sec.3.d"></span></div></li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><div><b data-i18n="sec.4.t"></b><span data-i18n="sec.4.d"></span></div></li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><div><b data-i18n="sec.5.t"></b><span data-i18n="sec.5.d"></span></div></li><li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><div><b data-i18n="sec.6.t"></b><span data-i18n="sec.6.d"></span></div></li></ul>
+  </section>
+  <aside class="ethics" role="note"><b data-i18n="ethics.t"></b> — <span data-i18n="ethics.d"></span></aside>
+</div>
+</main>
+<footer class="site-footer"><div class="wrap row between"><span>© WatcherOsint · <span data-i18n="footer.rights"></span></span><span class="faint mono">v2.0</span></div></footer>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script defer src="/bg3d.js"></script>
+<script src="/landing.js"></script>
+</body>
+</html>
