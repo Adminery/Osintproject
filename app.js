@@ -187,19 +187,28 @@
   /* ---------- results: phone ---------- */
   var res = { phone: null, email: null, username: null };
   var uFilter = 'found', region = 'all';
+  
   function renderPhone(d) {
-    var b = d.basic || {}, v = d.validation || {}, sp = d.spam || {}, ml = d.messenger_links || {};
+    var b = d.basic || {}, v = d.validation || {}, sp = d.spam || {}, ml = d.messenger_links || {}, ir = d.iranian || {};
     var score = Number(sp.score), valid = v.valid !== false && b.valid !== false;
     var level = isNaN(score) ? '' : score >= 7 ? L('High risk', 'ریسک بالا') : score >= 4 ? L('Moderate', 'متوسط') : L('Low risk', 'ریسک کم');
     var links = Object.keys(ml).map(function (k) {
       var href = safeUrl(ml[k]);
       return '<a class="up sm" href="' + esc(href || '#') + '"' + (href ? ' target="_blank" rel="noopener noreferrer"' : ' aria-disabled="true" tabindex="-1"') + '>' + badge(k) + '<span>' + esc(k) + '</span></a>';
     }).join('');
+
+    // اولویت با اطلاعات دقیق جدول ایرانی (ir) است، اگر نبود از basic می‌خوانیم
+    var carrierText = ir.carrier || b.carrier || '—';
+    var regionsText = ir.regions ? ir.regions.join('، ') : (b.region || '—');
+    var lineTypeText = ir.line_type || b.line_type || '—';
+    var prefixText = ir.prefix || '—';
+
     return '<div class="g2"><section class="card up"><div class="rh"><h3>' + L('Number report', 'گزارش شماره') + '</h3><span class="tag ' + (valid ? 'f clay' : 'm') + '">' + (valid ? L('Valid', 'معتبر') : L('Invalid', 'نامعتبر')) + '</span></div>'
       + row(L('Country', 'کشور'), esc(b.country || '—') + (b.country_code ? ' (+' + lt(b.country_code) + ')' : ''))
-      + row(L('Carrier', 'اپراتور'), esc(b.carrier || '—'))
-      + row(L('Regions', 'منطقه‌ها'), esc(b.region || '—'))
-      + row(L('Line type', 'نوع خط'), esc(b.line_type || '—'))
+      + row(L('Carrier', 'اپراتور'), esc(carrierText))
+      + (prefixText !== '—' ? row(L('Prefix', 'پیش‌شماره'), lt(prefixText)) : '')
+      + row(L('Regions', 'منطقه‌ها'), esc(regionsText))
+      + row(L('Line type', 'نوع خط'), esc(lineTypeText))
       + row(L('Timezone', 'منطقه زمانی'), lt((b.timezones || []).join(', ') || '—'))
       + row('E.164', lt(b.e164 || '—'))
       + row(L('National', 'ملی'), lt(b.national || '—'))
