@@ -149,7 +149,7 @@
         + '<a class="up gh" href="/settings">' + ico('gear', 18) + ' ' + L('Settings', 'تنظیمات') + '</a>'
         + '<a class="up gh" href="/history">' + ico('clock', 18) + ' ' + L('History', 'تاریخچه') + '</a>'
         + '<button class="up gh dng" type="button" data-a="logout">' + ico('out', 18) + ' ' + L('Log out', 'خروج') + '</button>'
-      : '<div class="pl"><span class="bl clay">' + LOGO + '</span><div><b>' + L('Welcome to WatcherOsint', 'به WatcherOsint خوش آمدید') + '</b><small>' + L('Log in to run lookups and save history.', 'برای جستجو و ذخیره‌ی تاریخچه وارد شوید.') + '</small></div></div>'
+      : '<div class="pl"><span class="bl clay">' + LOGO + '</span><div><b>' + L('Welcome to WatcherOsint', 'به WatcherOsint خوش آمدید') + '</b><small>' + L('Log in to run lookups and save history.', 'برای ذخیره تاریخچه وارد شوید.') + '</small></div></div>'
         + '<a class="btn" href="/login">' + ico('key', 18) + ' ' + L('Log in', 'ورود') + '</a><a class="up gh" href="/signup">' + L('Create account', 'ساخت حساب') + '</a>';
     var btn = me ? '<button class="ib clay" type="button" data-a="acct" aria-haspopup="true" aria-expanded="false" aria-label="' + L('Account', 'حساب کاربری') + '">' + esc(ini(me.username)) + '</button>'
       : '<a class="ib up" href="/login" aria-label="' + L('Log in', 'ورود') + '">' + ico('key', 22) + '</a>';
@@ -276,14 +276,23 @@
     return api(url).then(function (r) {
       if (btn) btn.disabled = false;
       if (bar2) bar2.classList.remove('run');
-      if (r.error === 'auth_required') { location.href = '/login?next=' + encodeURIComponent(location.pathname + location.search); return; }
+      
+      if (r.error === 'auth_required') { 
+        out.innerHTML = '<div class="msg err">' + esc(L('Please log in to use the API.', 'برای استفاده از API وارد شوید.')) + '</div>';
+        return; 
+      }
       if (!r.success) { out.innerHTML = '<div class="msg err">' + esc(errText(r)) + '</div>'; return; }
       res[kind] = r;
       if (kind === 'phone') out.innerHTML = renderPhone(r);
       if (kind === 'email') out.innerHTML = renderEmail(r);
       if (kind === 'username') { uFilter = 'found'; out.innerHTML = renderUser(r); }
       var summary = kind === 'username' ? (r.found_count || 0) + '/' + (r.checked || 0) : '';
-      api('/api/history', { method: 'POST', body: { kind: kind, query: q, summary: summary } });
+      
+      if (me) {
+        api('/api/history', { method: 'POST', body: { kind: kind, query: q, summary: summary } });
+      } else {
+        toast(L('Result generated. Log in to save it in history.', 'نتیجه دریافت شد. برای ذخیره در تاریخچه وارد شوید.'));
+      }
     });
   }
   function emptyOut(kind) {
@@ -650,14 +659,22 @@
   }
   function boot() {
     applyPrefs(); splash();
-    var protectedPage = ['phone', 'email', 'username', 'settings', 'history'].indexOf(PAGE) >= 0;
+    
+    // صفحاتی که نیازی به لاگین ندارند (برای رفع مشکل لاگین اجباری)
+    var publicPages = ['phone', 'email', 'username']; 
+    
     loadMe().then(function () {
       if (PAGE === 'login') {
         if (me) { var n = new URLSearchParams(location.search).get('next') || '/phone'; return location.replace(n); }
         au.tab = /signup/.test(location.pathname) ? 'signup' : 'login';
         return renderLogin();
       }
-      if (protectedPage && !me) return location.replace('/login?next=' + encodeURIComponent(location.pathname + location.search));
+      
+      // اگر صفحه محافظت‌شده بود و لاگین نبود (فقط برای صفحات تاریخچه و تنظیمات)
+      if (!me && (PAGE === 'settings' || PAGE === 'history')) {
+        return location.replace('/login?next=' + encodeURIComponent(location.pathname + location.search));
+      }
+
       $('#root').innerHTML = header() + '<div id="shell">' + sidebar() + '<main id="main">' + pageHtml() + '</main></div>';
       if (PAGE === 'phone' || PAGE === 'email' || PAGE === 'username') {
         var q = new URLSearchParams(location.search).get('q');
