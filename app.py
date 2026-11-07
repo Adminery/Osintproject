@@ -64,9 +64,13 @@ CSP = ("default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' 
 
 @app.before_request
 def guard_tools():
-    """OSINT tools are for signed-in, verified users only (keeps the server from becoming an open scanner)."""
-    if request.path.startswith(TOOL_PREFIXES) and not auth.current_user():
-        return jsonify({"success": False, "error": "auth_required", "message": "Please sign in."}), 401
+    """
+    فقط تاریخچه نیاز به لاگین دارد. 
+    ابزارهای جستجو (شماره، ایمیل، نام‌کاربری) برای همه آزاد هستند.
+    """
+    # اگر کاربر قصد دسترسی به تاریخچه را داشت و لاگین نبود، جلوی او را بگیر
+    if request.path.startswith("/api/history") and not auth.current_user():
+        return jsonify({"success": False, "error": "auth_required", "message": "Please sign in to view history."}), 401
 
 
 # ---------------------------------------------------------------- website
