@@ -14,6 +14,7 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 
 import auth
 import db as database
+from history import bp as history_bp
 from email_api import bp as email_bp      # never name a module "email.py": it shadows Python's stdlib
 from number import bp as phone_bp
 from username import bp as username_bp
@@ -23,10 +24,12 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 WEB_DIR = BASE_DIR   # flat layout: pages and static files live next to app.py
 IS_DEV = os.environ.get("ENV", "production") == "development"
 
-PAGES = {"index.html", "login.html", "console.html", "settings.html"}
-CLEAN = {"login": "login.html", "console": "console.html", "settings": "settings.html"}
-LEGACY = {"phone.html": "/console.html#phone", "email.html": "/console.html#email", "username.html": "/console.html#username"}
-TOOL_PREFIXES = ("/api/phone", "/api/email", "/api/username")
+PAGES = {"phone.html", "email.html", "username.html", "settings.html", "history.html", "login.html", "index.html"}
+CLEAN = {"phone": "phone.html", "email": "email.html", "username": "username.html", "settings": "settings.html",
+         "history": "history.html", "login": "login.html", "signup": "login.html"}
+LEGACY = {"console": "/phone", "console.html": "/phone", "phone.html": "/phone", "email.html": "/email",
+          "username.html": "/username", "settings.html": "/settings", "history.html": "/history", "login.html": "/login"}
+TOOL_PREFIXES = ("/api/phone", "/api/email", "/api/username", "/api/history")
 
 app = Flask(__name__)
 app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)   # Render / Netlify proxies
@@ -51,11 +54,11 @@ app.config.update(
 )
 database.init()
 
-for bp in (phone_bp, email_bp, username_bp, auth.bp):
+for bp in (phone_bp, email_bp, username_bp, auth.bp, history_bp):
     app.register_blueprint(bp)
 
-CSP = ("default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com; style-src 'self'; "
-       "img-src 'self' data: https://*.gravatar.com https://gravatar.com; font-src 'self'; connect-src 'self'; "
+CSP = ("default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
+       "img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com; connect-src 'self'; "
        "object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'")
 
 
@@ -69,20 +72,22 @@ def guard_tools():
 # ---------------------------------------------------------------- website
 @app.get("/")
 def home():
-    return send_from_directory(WEB_DIR, "index.html")
+    return redirect("/phone", 302)
 
 
-STATIC = {"style.css", "core.js", "i18n.js", "bg3d.js", "auth.js", "console.js", "settings.js", "landing.js", "banner.svg", "favicon.svg"}
+STATIC = {"style.css", "app.js", "favicon.svg"}
 
 
 @app.get("/<page>")
 def pages(page):
-    if page in PAGES or page in STATIC:
-        return send_from_directory(WEB_DIR, page, max_age=0 if (IS_DEV or page in PAGES) else 3600)
-    if page in CLEAN:
-        return send_from_directory(WEB_DIR, CLEAN[page])
+    if page in STATIC:
+        return send_from_directory(WEB_DIR, page, max_age=0 if IS_DEV else 3600)
     if page in LEGACY:
         return redirect(LEGACY[page], 301)
+    if page in CLEAN:
+        return send_from_directory(WEB_DIR, CLEAN[page])
+    if page in PAGES:
+        return send_from_directory(WEB_DIR, page)
     if page == "favicon.ico":
         return send_from_directory(WEB_DIR, "favicon.svg", mimetype="image/svg+xml")
     return jsonify({"success": False, "error": "not_found"}), 404

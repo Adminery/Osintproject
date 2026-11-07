@@ -43,7 +43,7 @@ check("TOTP RFC6238 vector", S._hotp(sec, 59 // 30) == "287082")
 # --- tools need auth
 c = C()
 check("tool API blocked when anonymous", c.get("/api/phone?number=09121234567")[0] == 401)
-check("pages served", c.c.get("/").status_code in (200, 404))   # index may not exist yet during build
+check("pages served", c.c.get("/").status_code in (200, 302, 404))   # index may not exist yet during build
 check("app.py not exposed", c.c.get("/app.py").status_code == 404 and c.c.get("/data/watcher.db").status_code == 404)
 
 # --- csrf / origin
@@ -155,7 +155,25 @@ check("audit trail recorded", {"login_ok", "password_changed", "2fa_enabled"} <=
 
 # --- security headers
 r = A.app.test_client().get("/api/health"); h = r.headers
-check("security headers present", all(k in h for k in ("Content-Security-Policy", "X-Frame-Options", "X-Content-Type-Options")) and "script-src 'self' https://cdnjs.cloudflare.com" in h["Content-Security-Policy"])
+check("security headers present", all(k in h for k in ("Content-Security-Policy", "X-Frame-Options", "X-Content-Type-Options")) and "script-src 'self'" in h["Content-Security-Policy"] and "cdnjs" not in h["Content-Security-Policy"])
+
+
+# --- v2.1: history API + pw_changed_at (fresh user, no 2FA)
+S.limiter._h.clear()
+r = A.app.test_client().get("/api/history"); check("history requires login", r.status_code == 401)
+dv = C(); dv.post("/signup", email="dave@example.com", username="dave", password=PW)
+dv.post("/verify", email="dave@example.com", code=last_code("dave@example.com"))
+tok = dv.csrf
+r = dv.c.post("/api/history", json={"kind": "phone", "query": "09121234567", "summary": "x"}, headers={"X-CSRF-Token": tok})
+check("history add ok", r.status_code == 200, r.get_data(as_text=True)[:120])
+r = dv.c.post("/api/history", json={"kind": "bogus", "query": "x"}, headers={"X-CSRF-Token": tok})
+check("history rejects bad kind", r.status_code == 400)
+items = dv.c.get("/api/history").get_json()["items"]
+check("history list has entry", len(items) == 1 and items[0]["query"] == "09121234567")
+r = dv.c.delete("/api/history", headers={"X-CSRF-Token": tok})
+check("history clear ok", r.status_code == 200 and dv.c.get("/api/history").get_json()["items"] == [])
+me = dv.c.get("/api/auth/me").get_json()["user"]
+check("me exposes pw_changed_at + created_at", bool(me.get("pw_changed_at")) and bool(me.get("created_at")), me)
 
 print("\nFAILED: %d" % len(fails) if fails else "\nALL BACKEND TESTS PASSED")
 sys.exit(1 if fails else 0)

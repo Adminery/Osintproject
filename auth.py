@@ -115,7 +115,8 @@ def audit(uid, event):
 
 def public_user(u):
     return {"email": u["email"], "username": u["username"], "totp_enabled": bool(u["totp_enabled"]),
-            "has_password": bool(u["pw_hash"]), "provider": u["oauth_provider"], "created_at": u["created_at"]}
+            "has_password": bool(u["pw_hash"]), "provider": u["oauth_provider"], "created_at": u["created_at"],
+            "pw_changed_at": u.get("pw_changed_at") if hasattr(u, "get") else u["pw_changed_at"]}
 
 
 def _origin_ok():
@@ -316,9 +317,9 @@ def signup():
         if clash:
             return err("username_taken", 409)
         if existing:
-            c.execute("UPDATE users SET username=?, pw_hash=?, created_at=? WHERE id=?", (username, pwh, time.time(), existing["id"]))
+            c.execute("UPDATE users SET username=?, pw_hash=?, created_at=?, pw_changed_at=? WHERE id=?", (username, pwh, time.time(), time.time(), existing["id"]))
         else:
-            c.execute("INSERT INTO users(email,username,pw_hash,created_at) VALUES(?,?,?,?)", (email, username, pwh, time.time()))
+            c.execute("INSERT INTO users(email,username,pw_hash,created_at,pw_changed_at) VALUES(?,?,?,?,?)", (email, username, pwh, time.time(), time.time()))
     status, wait = issue_otp(email, "verify")
     if status == "failed":
         return err("mail_failed", 502)
@@ -481,7 +482,7 @@ def reset():
     if res != "ok" or not u:
         return otp_error(res if res != "ok" else "invalid", left)
     with db() as c:
-        c.execute("UPDATE users SET pw_hash=?, failed_logins=0, locked_until=0 WHERE id=?", (generate_password_hash(pw), u["id"]))
+        c.execute("UPDATE users SET pw_hash=?, pw_changed_at=?, failed_logins=0, locked_until=0 WHERE id=?", (generate_password_hash(pw), time.time(), u["id"]))
     drop_sessions(u["id"])
     audit(u["id"], "password_reset")
     mailer.send_notice(email, "Your password was reset", "رمز عبور شما بازنشانی شد",
@@ -501,7 +502,7 @@ def change_password():
     if (pe := password_error(new, u["email"], u["username"])):
         return err(pe)
     with db() as c:
-        c.execute("UPDATE users SET pw_hash=? WHERE id=?", (generate_password_hash(new), u["id"]))
+        c.execute("UPDATE users SET pw_hash=?, pw_changed_at=? WHERE id=?", (generate_password_hash(new), time.time(), u["id"]))
     drop_sessions(u["id"], keep_hash=g.sid_hash)        # every OTHER device is signed out
     audit(u["id"], "password_changed")
     mailer.send_notice(u["email"], "Your password was changed", "رمز عبور شما تغییر کرد",

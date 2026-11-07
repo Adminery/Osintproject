@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS users(
   totp_last_step INTEGER NOT NULL DEFAULT 0,
   recovery TEXT,
   failed_logins INTEGER NOT NULL DEFAULT 0,
+  pw_changed_at REAL,
   locked_until REAL NOT NULL DEFAULT 0,
   oauth_provider TEXT,
   oauth_id TEXT,
@@ -61,6 +62,16 @@ CREATE TABLE IF NOT EXISTS audit(
   ts REAL NOT NULL
 );
 CREATE INDEX IF NOT EXISTS ix_audit_user ON audit(user_id, ts);
+
+CREATE TABLE IF NOT EXISTS lookups(
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  kind TEXT NOT NULL,
+  query TEXT NOT NULL,
+  summary TEXT,
+  ts REAL NOT NULL
+);
+CREATE INDEX IF NOT EXISTS ix_lookups_user ON lookups(user_id, ts);
 """
 
 
@@ -84,6 +95,10 @@ def init():
     with db() as c:
         c.execute("PRAGMA journal_mode=WAL")
         c.executescript(SCHEMA)
+        cols = {r["name"] for r in c.execute("PRAGMA table_info(users)")}
+        if "pw_changed_at" not in cols:          # migrate databases created by v2.0
+            c.execute("ALTER TABLE users ADD COLUMN pw_changed_at REAL")
+            c.execute("UPDATE users SET pw_changed_at=created_at WHERE pw_changed_at IS NULL")
         now = time.time()
         c.execute("DELETE FROM otps WHERE expires_at < ?", (now,))
         c.execute("DELETE FROM sessions WHERE expires_at < ?", (now,))

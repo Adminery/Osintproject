@@ -1,126 +1,20 @@
 <!doctype html>
-<html lang="en" dir="ltr">
+<html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Sign in — WatcherOsint</title>
-<meta name="description" content="Sign in or create a verified WatcherOsint account.">
-<meta name="theme-color" content="#05070d">
-<meta name="referrer" content="same-origin">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#e3e7ee">
+<title>Log in · WatcherOsint</title>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Manrope:wght@500;600;700;800&family=Vazirmatn:wght@400;600;800&family=JetBrains+Mono:wght@600&display=swap">
 <link rel="stylesheet" href="/style.css">
-<script src="/i18n.js"></script>
-<script src="/core.js"></script>
 </head>
 <body data-page="login">
-<canvas id="bg" aria-hidden="true"></canvas>
-<div class="veil" aria-hidden="true"></div><div class="grid-fx" aria-hidden="true"></div>
-<header id="site-header"></header>
-<main id="main"><div class="wrap auth">
-<div class="auth-side">
-  <h1><span data-i18n="auth.side.t1"></span><br><span class="grad" data-i18n="auth.side.t2"></span></h1>
-  <ul>
-    <li><span data-icon="mail"></span><span data-i18n="auth.side.1"></span></li>
-    <li><span data-icon="key"></span><span data-i18n="auth.side.2"></span></li>
-    <li><span data-icon="shield"></span><span data-i18n="auth.side.3"></span></li>
-  </ul>
-</div>
-<div class="glass auth-card" id="card">
-
-<div id="v-main" class="view">
-  <div class="tabs" role="tablist" data-i18n-aria="auth.tabs.aria">
-    <button class="tab" role="tab" id="tab-signin" aria-selected="true" aria-controls="p-signin" data-i18n="auth.tab.signin"></button>
-    <button class="tab" role="tab" id="tab-signup" aria-selected="false" aria-controls="p-signup" tabindex="-1" data-i18n="auth.tab.signup"></button>
-  </div>
-  <div role="tabpanel" id="p-signin" aria-labelledby="tab-signin" class="stack">
-    <div><h2 data-i18n="auth.signin.t"></h2><p class="muted" data-i18n="auth.signin.d"></p></div>
-    <form id="f-signin" novalidate class="stack">
-      <div class="field"><label for="si-id" data-i18n="f.identifier"></label><input class="input" id="si-id" autocomplete="username" required dir="ltr" autocapitalize="none" spellcheck="false" maxlength="254"></div>
-      <div class="field"><label for="si-pw" data-i18n="f.password"></label>
-<div class="input-wrap"><input class="input" id="si-pw" type="password" autocomplete="current-password" required dir="ltr" maxlength="128"><button type="button" class="icon-btn toggle" data-toggle="si-pw" aria-pressed="false"></button></div></div>
-      <label class="check"><input type="checkbox" id="si-rem"><span data-i18n="f.remember"></span></label>
-      <div class="form-error" id="si-err" role="alert" hidden></div>
-      <button class="btn btn-primary btn-block" type="submit" id="si-btn"><span data-i18n="auth.signin.btn"></span></button>
-      <div class="center"><button type="button" class="btn-link" id="go-forgot" data-i18n="auth.forgot"></button></div>
-    </form>
-    <div class="social-box" hidden><div class="divider" data-i18n="auth.or"></div><div class="social"><a class="btn" id="oa-google" href="/api/auth/google" hidden><span data-i18n="auth.google"></span></a><a class="btn" id="oa-github" href="/api/auth/github" hidden><span data-i18n="auth.github"></span></a></div></div>
-  </div>
-  <div role="tabpanel" id="p-signup" aria-labelledby="tab-signup" class="stack" hidden>
-    <div><h2 data-i18n="auth.signup.t"></h2><p class="muted" data-i18n="auth.signup.d"></p></div>
-    <div class="notice" id="su-nomail" role="note" hidden></div>
-    <form id="f-signup" novalidate class="stack">
-      <div class="field"><label for="su-email" data-i18n="f.email"></label><input class="input" id="su-email" type="email" autocomplete="email" required dir="ltr" autocapitalize="none" spellcheck="false" maxlength="254"></div>
-      <div class="field"><label for="su-user" data-i18n="f.username"></label><input class="input" id="su-user" autocomplete="username" required dir="ltr" autocapitalize="none" spellcheck="false" maxlength="24" aria-describedby="su-user-hint"><p class="hint" id="su-user-hint" data-i18n="f.username.hint"></p></div>
-      <div class="field"><label for="su-pw" data-i18n="f.password"></label>
-<div class="input-wrap"><input class="input" id="su-pw" type="password" autocomplete="new-password" required dir="ltr" maxlength="128"><button type="button" class="icon-btn toggle" data-toggle="su-pw" aria-pressed="false"></button></div><div class="meter" id="su-pw-meter" data-s="0" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
-<p class="hint" id="su-pw-label" aria-live="polite"></p>
-<ul class="rules" id="su-pw-rules"><li data-r="len" data-i18n="pw.rule.len"></li><li data-r="mix" data-i18n="pw.rule.mix"></li><li data-r="common" data-i18n="pw.rule.common"></li><li data-r="me" data-i18n="pw.rule.me"></li></ul></div>
-      <label class="check"><input type="checkbox" id="su-rem"><span data-i18n="f.remember"></span></label>
-      <div class="form-error" id="su-err" role="alert" hidden></div>
-      <button class="btn btn-primary btn-block" type="submit" id="su-btn"><span data-i18n="auth.signup.btn"></span></button>
-    </form>
-    <div class="social-box" hidden><div class="divider" data-i18n="auth.or"></div><div class="social"><a class="btn" id="oa-google2" href="/api/auth/google" hidden><span data-i18n="auth.google"></span></a><a class="btn" id="oa-github2" href="/api/auth/github" hidden><span data-i18n="auth.github"></span></a></div></div>
-  </div>
-</div>
-
-<div id="v-otp" class="view stack" hidden>
-  <div class="shield"><span data-icon="mail"></span></div>
-  <div class="center"><h2 tabindex="-1" id="otp-h" data-i18n="otp.t"></h2><p class="muted" id="otp-desc"></p></div>
-  <div class="notice" id="otp-nomail" role="note" hidden data-i18n="otp.nomail"></div>
-  <div class="ring" id="ov-ring" aria-hidden="true"><svg viewBox="0 0 84 84"><circle class="track" cx="42" cy="42" r="38"></circle><circle class="prog" cx="42" cy="42" r="38"></circle></svg><div class="time mono" id="ov-time">10:00</div></div>
-<p class="center small muted" data-i18n="otp.expires"></p>
-<div class="otp" id="ov-boxes" role="group" data-i18n-aria="otp.aria"></div>
-  <div class="form-error" id="ov-err" role="alert" hidden></div>
-  <button class="btn btn-primary btn-block" type="button" id="ov-btn"><span data-i18n="otp.verify"></span></button>
-  <div class="row between">
-    <button class="btn-link" type="button" id="ov-resend"></button>
-    <button class="btn-link" type="button" id="ov-change" data-i18n="otp.change"></button>
-  </div>
-</div>
-
-<div id="v-totp" class="view stack" hidden>
-  <div class="shield"><span data-icon="shield"></span></div>
-  <div class="center"><h2 tabindex="-1" id="totp-h" data-i18n="totp.t"></h2><p class="muted" data-i18n="totp.d"></p></div>
-  <div id="tp-app"><div class="otp" id="tp-boxes" role="group" data-i18n-aria="otp.aria"></div></div>
-  <div class="field" id="tp-rec" hidden><label for="tp-recin" data-i18n="f.recovery"></label><input class="input mono" id="tp-recin" dir="ltr" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="a1b2c3-d4e5f6" maxlength="20"></div>
-  <div class="form-error" id="tp-err" role="alert" hidden></div>
-  <button class="btn btn-primary btn-block" type="button" id="tp-btn"><span data-i18n="totp.btn"></span></button>
-  <div class="center"><button class="btn-link" type="button" id="tp-toggle"></button></div>
-</div>
-
-<div id="v-forgot" class="view stack" hidden>
-  <div><h2 tabindex="-1" id="fg-h" data-i18n="forgot.t"></h2><p class="muted" data-i18n="forgot.d"></p></div>
-  <form id="f-forgot" novalidate class="stack">
-    <div class="field"><label for="fg-email" data-i18n="f.email"></label><input class="input" id="fg-email" type="email" autocomplete="email" required dir="ltr" autocapitalize="none" maxlength="254"></div>
-    <div class="form-error" id="fg-err" role="alert" hidden></div>
-    <button class="btn btn-primary btn-block" type="submit" id="fg-btn"><span data-i18n="forgot.btn"></span></button>
-    <div class="center"><button type="button" class="btn-link" id="fg-back" data-i18n="auth.back"></button></div>
-  </form>
-</div>
-
-<div id="v-reset" class="view stack" hidden>
-  <div class="center"><h2 tabindex="-1" id="rs-h" data-i18n="reset.t"></h2><p class="muted" id="rs-desc"></p></div>
-  <div class="ring" id="rs-ring" aria-hidden="true"><svg viewBox="0 0 84 84"><circle class="track" cx="42" cy="42" r="38"></circle><circle class="prog" cx="42" cy="42" r="38"></circle></svg><div class="time mono" id="rs-time">10:00</div></div>
-<p class="center small muted" data-i18n="otp.expires"></p>
-<div class="otp" id="rs-boxes" role="group" data-i18n-aria="otp.aria"></div>
-  <div class="field"><label for="rs-pw" data-i18n="f.password.new"></label>
-<div class="input-wrap"><input class="input" id="rs-pw" type="password" autocomplete="new-password" required dir="ltr" maxlength="128"><button type="button" class="icon-btn toggle" data-toggle="rs-pw" aria-pressed="false"></button></div><div class="meter" id="rs-pw-meter" data-s="0" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
-<p class="hint" id="rs-pw-label" aria-live="polite"></p>
-<ul class="rules" id="rs-pw-rules"><li data-r="len" data-i18n="pw.rule.len"></li><li data-r="mix" data-i18n="pw.rule.mix"></li><li data-r="common" data-i18n="pw.rule.common"></li><li data-r="me" data-i18n="pw.rule.me"></li></ul></div>
-  <div class="form-error" id="rs-err" role="alert" hidden></div>
-  <button class="btn btn-primary btn-block" type="button" id="rs-btn"><span data-i18n="reset.btn"></span></button>
-  <div class="row between"><button class="btn-link" type="button" id="rs-resend"></button><button type="button" class="btn-link" id="rs-back" data-i18n="auth.back"></button></div>
-</div>
-
-<div id="v-done" class="view stack center" hidden>
-  <svg class="checkmark" viewBox="0 0 84 84" aria-hidden="true"><circle cx="42" cy="42" r="40"></circle><path d="M26 43l11 11 21-23"></path></svg>
-  <h2 tabindex="-1" id="dn-h" data-i18n="done.t"></h2><p class="muted" data-i18n="done.d"></p>
-</div>
-
-</div></div></main>
-<footer class="site-footer"><div class="wrap row between"><span>© WatcherOsint · <span data-i18n="footer.rights"></span></span><span class="faint mono">v2.0</span></div></footer>
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script defer src="/bg3d.js"></script>
-<script src="/auth.js"></script>
+<div id="splash" aria-hidden="true"><div class="si"><div class="sl in"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M16 2l12 7v14l-12 7L4 23V9z"/><path d="M8 16c2.5-4 13.5-4 16 0-2.5 4-13.5 4-16 0z"/><circle cx="16" cy="16" r="2.6" fill="currentColor"/></svg></div><div style="font:800 24px var(--fh)">Watcher<span style="color:var(--ac)">Osint</span></div></div></div>
+<div id="root"></div>
+<div id="toast" class="up" role="status" aria-live="polite"></div>
+<noscript><p style="padding:24px">WatcherOsint needs JavaScript.</p></noscript>
+<script src="/app.js" defer></script>
 </body>
 </html>
